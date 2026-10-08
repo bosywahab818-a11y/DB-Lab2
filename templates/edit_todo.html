@@ -29,13 +29,25 @@
                     name="title"
                     value="{{ todo.title }}"
                     maxlength="200"
+                    placeholder="Todo title"
                 >
 
-                <button type="submit">Save</button>
+                <input
+                    type="date"
+                    name="due_date"
+                    value="{{ todo.due_date if todo.due_date else '' }}"
+                    class="date-input"
+                >
+
+                <button type="submit" class="add-btn">
+                    Save Changes
+                </button>
 
             </form>
 
-            <a href="/todos">Cancel</a>
+            <a href="/todos" class="cancel-btn">
+                Cancel
+            </a>
 
         </div>
 
