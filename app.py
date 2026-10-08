@@ -86,18 +86,19 @@ def register():
                             bcrypt.gensalt()
                         ).decode("utf-8")
 
-                        cursor.execute(
-                            """
-                            INSERT INTO users
-                            (email, name, password_hash)
-                            VALUES (%s, %s, %s);
-                            """,
-                            (email, name, password_hash)
-                        )
+                        cursor.execute("""
+                        INSERT INTO users
+                        (email, name, password_hash)
+                         VALUES (%s, %s, %s);
+                          """,
+                        (email, name, password_hash))
 
                         connection.commit()
+                        session["user_id"] = cursor.lastrowid
+                        session["user_name"] = name
+                        connection.commit()
+                        return redirect(url_for("todos"))
 
-                        return "Registration successful!"
 
             finally:
                 connection.close()

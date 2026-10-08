@@ -3,303 +3,345 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>My To-Do List</title>
+    <title>My To-Do List</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-```
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 
 </head>
 
 <body>
 
-```
-<div class="container">
+    <div class="container">
 
-    <div class="card">
+        <div class="card">
 
-        <!-- ==================== TOP SECTION ==================== -->
+            <!-- ==================== TOP SECTION ==================== -->
 
-        <div class="top-section">
+            <div class="top-section">
 
-            <div>
-                <h1>Welcome, {{ user_name }}</h1>
-                <p class="subtitle">Manage your tasks easily</p>
+                <div>
+
+                    <h1>
+                        Welcome, {{ user_name }}
+                    </h1>
+
+                    <p class="subtitle">
+                        Manage your tasks easily
+                    </p>
+
+                </div>
+
+                <div class="top-buttons">
+
+                    <button
+                        type="button"
+                        id="theme-toggle"
+                        class="theme-btn"
+                    >
+                        🌙 Dark Mode
+                    </button>
+
+                    <a
+                        class="logout-btn"
+                        href="/logout"
+                    >
+                        Logout
+                    </a>
+
+                </div>
+
             </div>
 
-            <div class="top-buttons">
+
+            <!-- ==================== OPEN TODOS COUNTER ==================== -->
+
+            <div class="counter">
+
+                <span>
+                    Open Todos
+                </span>
+
+                <strong>
+                    {{ open_count }}
+                </strong>
+
+            </div>
+
+
+            <!-- ==================== ADD TODO ==================== -->
+
+            <h2>
+                Add Todo
+            </h2>
+
+            {% if error %}
+
+                <p class="error">
+                    {{ error }}
+                </p>
+
+            {% endif %}
+
+            <form
+                method="POST"
+                action="/todos/add"
+                class="add-form"
+            >
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="What do you need to do?"
+                    maxlength="200"
+                    required
+                >
+
+                <input
+                    type="date"
+                    name="due_date"
+                    class="date-input"
+                >
 
                 <button
-                    type="button"
-                    id="theme-toggle"
-                    class="theme-btn"
+                    type="submit"
+                    class="add-btn"
                 >
-                    🌙 Dark Mode
+                    + Add Todo
                 </button>
 
-                <a
-                    class="logout-btn"
-                    href="/logout"
+            </form>
+
+
+            <!-- ==================== SEARCH ==================== -->
+
+            <form
+                method="GET"
+                action="{{ url_for('todos') }}"
+                class="search-form"
+            >
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="🔍 Search your todos..."
+                    value="{{ search }}"
                 >
-                    Logout
+
+                {% if current_filter != 'all' %}
+
+                    <input
+                        type="hidden"
+                        name="filter"
+                        value="{{ current_filter }}"
+                    >
+
+                {% endif %}
+
+                <button
+                    type="submit"
+                    class="search-btn"
+                >
+                    Search
+                </button>
+
+            </form>
+
+
+            <!-- ==================== FILTERS ==================== -->
+
+            <div class="filters">
+
+                <a
+                    href="{{ url_for('todos', filter='all', search=search) }}"
+                    class="filter-btn {% if current_filter == 'all' %}active{% endif %}"
+                >
+                    All
+                </a>
+
+                <a
+                    href="{{ url_for('todos', filter='open', search=search) }}"
+                    class="filter-btn {% if current_filter == 'open' %}active{% endif %}"
+                >
+                    Open
+                </a>
+
+                <a
+                    href="{{ url_for('todos', filter='done', search=search) }}"
+                    class="filter-btn {% if current_filter == 'done' %}active{% endif %}"
+                >
+                    Done
                 </a>
 
             </div>
 
-        </div>
 
-        <!-- ==================== OPEN TODOS COUNTER ==================== -->
+            <!-- ==================== TODO LIST ==================== -->
 
-        <div class="counter">
+            <h2>
+                My Todos
+            </h2>
 
-            <span>Open Todos</span>
+            {% if todos %}
 
-            <strong>{{ open_count }}</strong>
+                {% for todo in todos %}
 
-        </div>
+                    <div class="todo">
 
-        <!-- ==================== ADD TODO ==================== -->
+                        <div class="todo-content">
 
-        <h2>Add Todo</h2>
-
-        {% if error %}
-
-            <p class="error">
-                {{ error }}
-            </p>
-
-        {% endif %}
-
-        <form
-            method="POST"
-            action="/todos/add"
-            class="add-form"
-        >
-
-            <input
-                type="text"
-                name="title"
-                placeholder="What do you need to do?"
-                maxlength="200"
-            >
-
-            <input
-                type="date"
-                name="due_date"
-                class="date-input"
-            >
-
-            <button
-                type="submit"
-                class="add-btn"
-            >
-                + Add Todo
-            </button>
-
-        </form>
-
-        <!-- ==================== SEARCH ==================== -->
-
-        <form
-            method="GET"
-            action="{{ url_for('todos') }}"
-            class="search-form"
-        >
-
-            <input
-                type="text"
-                name="search"
-                placeholder="🔍 Search your todos..."
-                value="{{ search }}"
-            >
-
-            {% if current_filter != 'all' %}
-
-                <input
-                    type="hidden"
-                    name="filter"
-                    value="{{ current_filter }}"
-                >
-
-            {% endif %}
-
-            <button
-                type="submit"
-                class="search-btn"
-            >
-                Search
-            </button>
-
-        </form>
-
-        <!-- ==================== FILTERS ==================== -->
-
-        <div class="filters">
-
-            <a
-                href="{{ url_for('todos', filter='all', search=search) }}"
-                class="filter-btn {% if current_filter == 'all' %}active{% endif %}"
-            >
-                All
-            </a>
-
-            <a
-                href="{{ url_for('todos', filter='open', search=search) }}"
-                class="filter-btn {% if current_filter == 'open' %}active{% endif %}"
-            >
-                Open
-            </a>
-
-            <a
-                href="{{ url_for('todos', filter='done', search=search) }}"
-                class="filter-btn {% if current_filter == 'done' %}active{% endif %}"
-            >
-                Done
-            </a>
-
-        </div>
-
-        <!-- ==================== TODO LIST ==================== -->
-
-        <h2>My Todos</h2>
-
-        {% if todos %}
-
-            {% for todo in todos %}
-
-                <div class="todo">
-
-                    <div class="todo-content">
-
-                        <span
-                            class="{% if todo.is_done %}completed{% endif %}"
-                        >
-
-                            {% if todo.is_done %}
-                                ✓
-                            {% endif %}
-
-                            {{ todo.title }}
-
-                        </span>
-
-                        {% if todo.due_date %}
-
-                            <div class="due-date">
-                                📅 Due: {{ todo.due_date }}
-                            </div>
-
-                        {% endif %}
-
-                    </div>
-
-                    <div class="todo-actions">
-
-                        <a
-                            href="/todos/{{ todo.todo_id }}/edit"
-                            class="edit-btn"
-                        >
-                            Edit
-                        </a>
-
-                        <form
-                            method="POST"
-                            action="/todos/{{ todo.todo_id }}/done"
-                        >
-
-                            <input
-                                type="hidden"
-                                name="is_done"
-                                value="{{ 0 if todo.is_done else 1 }}"
-                            >
-
-                            <button
-                                type="submit"
-                                class="done-btn"
+                            <span
+                                class="{% if todo.is_done %}completed{% endif %}"
                             >
 
                                 {% if todo.is_done %}
-                                    Undo
-                                {% else %}
-                                    Done
+                                    ✓
                                 {% endif %}
 
-                            </button>
+                                {{ todo.title }}
 
-                        </form>
+                            </span>
 
-                        <form
-                            method="POST"
-                            action="/todos/{{ todo.todo_id }}/delete"
-                        >
+                            {% if todo.due_date %}
 
-                            <button
-                                type="submit"
-                                class="delete-btn"
+                                <div class="due-date">
+                                    📅 Due: {{ todo.due_date }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ==================== TODO ACTIONS ==================== -->
+
+                        <div class="todo-actions">
+
+                            <!-- EDIT -->
+
+                            <a
+                                href="/todos/{{ todo.todo_id }}/edit"
+                                class="edit-btn"
                             >
-                                Delete
-                            </button>
+                                Edit
+                            </a>
 
-                        </form>
+
+                            <!-- DONE / UNDO -->
+
+                            <form
+                                method="POST"
+                                action="/todos/{{ todo.todo_id }}/done"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="is_done"
+                                    value="{{ 0 if todo.is_done else 1 }}"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="done-btn"
+                                >
+
+                                    {% if todo.is_done %}
+                                        Undo
+                                    {% else %}
+                                        Done
+                                    {% endif %}
+
+                                </button>
+
+                            </form>
+
+
+                            <!-- DELETE -->
+
+                            <form
+                                method="POST"
+                                action="/todos/{{ todo.todo_id }}/delete"
+                                onsubmit="return confirm('Are you sure?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="delete-btn"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
 
                     </div>
 
-                </div>
+                {% endfor %}
 
-            {% endfor %}
+            {% else %}
 
-        {% else %}
+                <p class="empty-message">
+                    No todos found.
+                </p>
 
-            <p class="empty-message">
-                No todos found.
-            </p>
+            {% endif %}
 
-        {% endif %}
+        </div>
 
     </div>
 
-</div>
 
-<!-- ==================== DARK MODE SCRIPT ==================== -->
+    <!-- ==================== DARK MODE SCRIPT ==================== -->
 
-<script>
+    <script>
 
-    const toggle = document.getElementById("theme-toggle");
+        const toggle =
+            document.getElementById("theme-toggle");
 
-    const savedTheme = localStorage.getItem("theme");
+        const savedTheme =
+            localStorage.getItem("theme");
 
-    if (savedTheme === "dark") {
 
-        document.body.classList.add("dark-mode");
+        if (savedTheme === "dark") {
 
-        toggle.textContent = "☀️ Light Mode";
+            document.body.classList.add("dark-mode");
 
-    }
+            toggle.textContent =
+                "☀️ Light Mode";
 
-    toggle.addEventListener("click", function () {
+        }
 
-        document.body.classList.toggle("dark-mode");
 
-        const isDark =
-            document.body.classList.contains("dark-mode");
+        toggle.addEventListener("click", function () {
 
-        localStorage.setItem(
-            "theme",
-            isDark ? "dark" : "light"
-        );
+            document.body.classList.toggle("dark-mode");
 
-        toggle.textContent =
-            isDark
-                ? "☀️ Light Mode"
-                : "🌙 Dark Mode";
+            const isDark =
+                document.body.classList.contains("dark-mode");
 
-    });
 
-</script>
-```
+            localStorage.setItem(
+                "theme",
+                isDark ? "dark" : "light"
+            );
+
+
+            toggle.textContent =
+                isDark
+                    ? "☀️ Light Mode"
+                    : "🌙 Dark Mode";
+
+        });
+
+    </script>
 
 </body>
 
