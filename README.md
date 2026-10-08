@@ -3,7 +3,7 @@
 ## Team Members
 
 - Bouthina Mohamed Abdelwahab
-- Student ID: [2304065]
+- Student ID: 2304065
 
 ## Project Overview
 
