@@ -30,6 +30,23 @@ The application allows users to:
 - JavaScript
 - bcrypt
 - python-dotenv
+## Screenshots
+
+### Registration Page
+
+![Registration Page](./register.png.jpeg)
+
+### Login Page
+
+![Login Page](./login.png.jpeg)
+
+### Todo List
+
+![Todo List](./todos.png.jpeg)
+
+### Edit Todo
+
+![Edit Todo](./edit.png.jpeg)
 
 ## Database
 
@@ -44,20 +61,3 @@ The relationship between the tables is implemented using a Foreign Key:
 
 ```sql
 FOREIGN KEY (user_id) REFERENCES users(user_id)
-## Screenshots
-
-### Registration Page
-
-![Registration Page](register.png.jpeg)
-
-### Login Page
-
-![Login Page](login.png.jpeg)
-
-### Todo List
-
-![Todo List](todos.png.jpeg)
-
-### Edit Todo
-
-![Edit Todo](edit.png.jpeg)
