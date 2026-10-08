@@ -44,9 +44,6 @@ The application allows users to:
 
 ![Todo List](./todos.png.jpeg)
 
-### Edit Todo
-
-![Edit Todo](./edit.png.jpeg)
 
 ## Lab Questions & Answers
 
