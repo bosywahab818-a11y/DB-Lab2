@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My To-Do List</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <h1>Welcome, {{ user_name }}</h1>
+
+            <a href="/logout">Logout</a>
+
+            <h2>Add Todo</h2>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" action="/todos/add">
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Todo title"
+                    maxlength="200"
+                >
+
+                <button type="submit">Add</button>
+
+            </form>
+
+            <h2>My Todos</h2>
+
+            {% for todo in todos %}
+
+                <div class="todo">
+
+                    <span>
+                        {% if todo.is_done %}
+                            ✓
+                        {% endif %}
+
+                        {{ todo.title }}
+                    </span>
+
+                    <br><br>
+
+                    <a href="/todos/{{ todo.todo_id }}/edit">
+                        Edit
+                    </a>
+
+                    <form
+                        method="POST"
+                        action="/todos/{{ todo.todo_id }}/done"
+                    >
+                        <input
+                            type="hidden"
+                            name="is_done"
+                            value="{{ 0 if todo.is_done else 1 }}"
+                        >
+
+                        <button type="submit">
+                            {% if todo.is_done %}
+                                Undo
+                            {% else %}
+                                Done
+                            {% endif %}
+                        </button>
+
+                    </form>
+
+                    <form
+                        method="POST"
+                        action="/todos/{{ todo.todo_id }}/delete"
+                    >
+
+                        <button type="submit">
+                            Delete
+                        </button>
+
+                    </form>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</body>
+</html>
