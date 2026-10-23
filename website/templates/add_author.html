@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Author</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container" style="max-width: 500px; margin: 40px auto; padding: 25px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <h2>Add New Author</h2>
+    {% if error %}<p style="color: red;">{{ error }}</p>{% endif %}
+    <form method="POST" enctype="multipart/form-data">
+        <p><label><strong>Name:</strong></label><br><input type="text" name="name" required style="width: 100%; padding: 8px; margin-top: 5px;"></p>
+        <p><label><strong>Country:</strong></label><br><input type="text" name="country" style="width: 100%; padding: 8px; margin-top: 5px;"></p>
+        <p><label><strong>Photo:</strong></label><br><input type="file" name="image" accept="image/*" style="margin-top: 5px;"></p>
+        <br>
+        <button type="submit" style="background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Save Author</button>
+        <a href="{{ url_for('library') }}" style="margin-left: 10px; color: #666;">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

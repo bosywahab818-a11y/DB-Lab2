@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; }
+        .container { max-width: 1000px; margin: auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; vertical-align: middle; }
+        th { background-color: #007bff; color: white; }
+        .btn { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block; }
+        .btn-add { background-color: #28a745; color: white; margin-bottom: 15px; }
+        .btn-edit { background-color: #ffc107; color: #212529; }
+        .btn-delete { background-color: #dc3545; color: white; border: none; cursor: pointer; }
+        .img-preview { width: 50px; height: 65px; object-fit: cover; border-radius: 4px; }
+        .nav-links { margin-bottom: 20px; }
+        .nav-links a { margin-right: 15px; color: #007bff; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="nav-links">
+        <a href="{{ url_for('todos') }}">My To-Do List</a>
+        <a href="{{ url_for('library') }}">Library System</a>
+    </div>
+
+    <h1>Library Management System</h1>
+
+    <!-- AUTHORS TABLE -->
+    <h2>Authors Table</h2>
+    <a href="{{ url_for('add_author') }}" class="btn btn-add">+ Add New Author</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Country</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in authors %}
+            <tr>
+                <td>{{ author.author_id }}</td>
+                <td>
+                    {% if author.image_url %}
+                        <img src="{{ url_for('static', filename=author.image_url) }}" class="img-preview" alt="Author photo">
+                    {% else %}
+                        <span>No photo</span>
+                    {% endif %}
+                </td>
+                <td>{{ author.name }}</td>
+                <td>{{ author.country or '' }}</td>
+                <td>
+                    <a href="{{ url_for('edit_author', author_id=author.author_id) }}" class="btn btn-edit">Edit</a>
+                    <form action="{{ url_for('delete_author', author_id=author.author_id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-delete" onclick="return confirm('Deleting an author may delete their books. Continue?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No authors found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <!-- BOOKS TABLE -->
+    <h2>Books Table</h2>
+    <a href="{{ url_for('add_book') }}" class="btn btn-add">+ Add New Book</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cover</th>
+                <th>Title</th>
+                <th>Price ($)</th>
+                <th>Author ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.book_id }}</td>
+                <td>
+                    {% if book.image_url %}
+                        <img src="{{ url_for('static', filename=book.image_url) }}" class="img-preview" alt="Book cover">
+                    {% else %}
+                        <span>No cover</span>
+                    {% endif %}
+                </td>
+                <td>{{ book.title }}</td>
+                <td>{{ "%.2f"|format(book.price) }}</td>
+                <td>{{ book.author_id }}</td>
+                <td>
+                    <a href="{{ url_for('edit_book', book_id=book.book_id) }}" class="btn btn-edit">Edit</a>
+                    <form action="{{ url_for('delete_book', book_id=book.book_id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this book?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">No books found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>
