@@ -1,0 +1,30 @@
+Database Systems Lab 3 — Problem 1 Answers
+
+Q1.1 — Delete a Referenced Employee
+
+SQL:
+```sql
+USE company;
+DELETE FROM EMPLOYEE WHERE ssn = 101;
+```
+
+Expected result: MySQL returns Error 1451 if employee 101 is referenced by DEPARTMENT.mgr_ssn. The foreign key prevents deleting an employee who is still referenced by a department.
+
+Q1.2 — Insert a Project with a Non-Existent Department
+
+SQL:
+```sql
+USE company;
+INSERT INTO PROJECT (Pnumber, Pname, Plocation, Dno)
+VALUES (40, 'Test Project', 'Cairo', 999);
+```
+
+Expected result: MySQL returns Error 1452 if department 999 does not exist in DEPARTMENT. The foreign key prevents inserting a project that references a non-existent department.
+
+Q1.3 — Mutual NOT NULL Foreign Keys
+
+If EMPLOYEE.Dno references DEPARTMENT.Dnumber and DEPARTMENT.mgr_ssn references EMPLOYEE.ssn, both columns are NOT NULL, and both foreign key constraints are enforced during insertion, inserting the first records directly creates a circular dependency.
+
+One solution is to create the tables first and add one of the foreign key constraints later using ALTER TABLE. Insert the initial records in an order that satisfies the existing constraint, update the manager reference, and then add the remaining constraint once the referenced records exist. If the schema permits NULL temporarily, another solution is to insert the department with a NULL manager, insert the employee, and then update the department manager.
+
+Disabling FOREIGN_KEY_CHECKS is not recommended because re-enabling it does not retroactively validate rows inserted while checks were disabled.
